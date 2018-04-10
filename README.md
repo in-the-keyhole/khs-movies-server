@@ -10,4 +10,3 @@ Prerequisite:
 1. Clone project
 2. npm install from a command shell
 3. npm start from a command shell 
-4. Browser should open on http://localhost:3000
