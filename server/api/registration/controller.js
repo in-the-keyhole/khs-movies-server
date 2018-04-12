@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Keyhole Software LLC
+Copyright 2018 Keyhole Software LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,18 +24,33 @@ function registration(req, res) {
     var email = req.body['email'] || '';
     var password = req.body['password'] || '';
     var confirmPassword = req.body['confirmPassword'] || '';
-    if (email === '' || password === '' ||confirmPassword==='') {
-        res.sendStatus(403);
-    }
+    var message;
 
-    registrationService
-        .registration(email, password , confirmPassword )
+    if (email === '' || password === '' || confirmPassword === '') {
+        message = {
+            error: "Please enter your email and password"
+        }
+        // res.sendStatus(403);
+        res.send(message);
+    } else if (password != confirmPassword) {
+        message = {
+            error: "Please confirm you passwords are matched"
+        }
+        //res.sendStatus(403);
+        res.send(message);
+    } else {
+        registrationService
+        .registration(email, password, confirmPassword)
         .then(function (response) {
             res.send(response);
         })
         .catch(function (err) {
-            res.sendStatus(403);
+            var message = {
+                error: err
+            }
+            res.send(message);
         });
+    }
 }
 
 module.exports = {

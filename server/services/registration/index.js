@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Keyhole Software LLC
+Copyright 2018 Keyhole Software LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,12 +31,17 @@ function encodePassword(password) {
     return temp;
 }
 
-function registration(email, password,confirmPassword) {
+function registration(email, password, confirmPassword) {
     return new Promise(function (resolve, reject) {
 
-       if (password!=confirmPassword){
-            return reject("passwords shoule be the same!");
-       }
+        var message;
+        if (password != confirmPassword) {
+
+            message = {
+                error: "passwords shoule be the matched!"
+            }
+            return reject(message);
+        }
 
         mongo.Get({
             email: email
@@ -44,7 +49,12 @@ function registration(email, password,confirmPassword) {
         }, "USERS")
             .then(function (response) {
                 if (response.length > 0) {
-                    return reject("The email is already registered");
+
+                    message = {
+                        error: "The email is registered already"
+                    }
+
+                    return resolve(message);
                 } else {
                     var id = uuid();
                     var data = {
@@ -57,19 +67,29 @@ function registration(email, password,confirmPassword) {
                         .Insert(data, 'USERS')
                         .then(function (contact) {
                             console.log('Contact   ' + contact);
-                            return resolve("registered successed");
+
+                            message = {
+                                error: ""
+                            }
+                            return resolve(message);
                         })
                         .catch(function (error) {
-                            return reject("registered failed");
-                        });;
+                            message = {
+                                error: "registration failed"
+                            }
+                            return resolve(message);
+                        });
                 }
             })
             .catch(function (error) {
-                console.log("registration failed  " + error);
-                return reject("registered failed" +error );
+                message = {
+                    error: "registration failed"
+                }
+                return resolve(message);
             });
-    })
 
+        // return reject ("Anything else");
+    })
 }
 
 module.exports = {

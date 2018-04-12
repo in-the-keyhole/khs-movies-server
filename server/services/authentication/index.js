@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Keyhole Software LLC
+Copyright 2018 Keyhole Software LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -32,6 +32,9 @@ function encodePassword(password) {
 
 function auth(email, password) {
     return new Promise(function (resolve, reject) {
+        var message ={
+            error: "your email or password is not valid"
+        };
         try {
             mongo.Get({
                 email: email,
@@ -42,7 +45,7 @@ function auth(email, password) {
                 .then(function (docs) {
 
                     if (docs.length === 0) {
-                        return reject();
+                        return resolve(message);
                     }
                     var user = docs[0];
                     if (user.password === encodePassword(password)) {
@@ -62,12 +65,15 @@ function auth(email, password) {
                         user.apitoken = config.api_token;
                         return resolve(user);
                     } else {
-                        return reject("Authentication failed");
+            
+                        return resolve(message);
                     }
                 })
                 .catch(function (error) {
-                    console.log(error);
-                    return reject("Authentication failed");
+                    message ={
+                        error: "your email or password is not valid"
+                    }
+                    return resolve(message );
                 });
 
         } catch (ex) {
@@ -96,7 +102,6 @@ function isAuth(req, res, next) {
         next();
     })
         .catch(function (err) {
-            //logger.info(err);
             res.sendStatus(403);
         });
 }

@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Keyhole Software LLC
+Copyright 2018 Keyhole Software LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ function login(req, res) {
     var password = req.body.password;
 
     if (email === '' || password === '') {
+
         return res.sendStatus(403);
     }
     AuthenticationService.auth(email, password)
@@ -32,7 +33,7 @@ function login(req, res) {
            return  res.send(response);
         })
         .catch(function (err) {
-           return  res.sendStatus(403);
+            res.sendStatus(403);
         });
 }
 
