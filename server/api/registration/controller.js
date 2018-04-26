@@ -24,22 +24,8 @@ function registration(req, res) {
     var email = req.body['email'] || '';
     var password = req.body['password'] || '';
     var confirmPassword = req.body['confirmPassword'] || '';
-    var message;
 
-    if (email === '' || password === '' || confirmPassword === '') {
-        message = {
-            error: "Please enter your email and password"
-        }
-        // res.sendStatus(403);
-        res.send(message);
-    } else if (password != confirmPassword) {
-        message = {
-            error: "Please confirm you passwords are matched"
-        }
-        //res.sendStatus(403);
-        res.send(message);
-    } else {
-        registrationService
+    registrationService
         .registration(email, password, confirmPassword)
         .then(function (response) {
             res.send(response);
@@ -50,7 +36,6 @@ function registration(req, res) {
             }
             res.send(message);
         });
-    }
 }
 
 module.exports = {

@@ -34,13 +34,20 @@ function encodePassword(password) {
 function registration(email, password, confirmPassword) {
     return new Promise(function (resolve, reject) {
 
-        var message;
-        if (password != confirmPassword) {
+        var message = {
+            error: ''
+        }
+        if (email == '' || password == '' || confirmPassword == '') {
+            message = {
+                error: "Please enter your email and password"
+            }
+            return res.resolve(message);
+        } else if (password != confirmPassword) {
 
             message = {
                 error: "passwords shoule be the matched!"
             }
-            return reject(message);
+            return resolve(message);
         }
 
         mongo.Get({
@@ -87,8 +94,6 @@ function registration(email, password, confirmPassword) {
                 }
                 return resolve(message);
             });
-
-        // return reject ("Anything else");
     })
 }
 
